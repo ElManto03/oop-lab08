@@ -10,12 +10,10 @@ public class DeathNoteImpl implements DeathNote {
 
     private static final int WRITE_DEATH_LIMIT = 40;
     private static final int WRITE_DETAILS_LIMIT = 6040;
-    private static final String DEFAULT_CAUSE = "heart attack";
 
     private final Map<String, Death> deathnote;
     private String lastDeath;
-    private long writtenNameTime;
-    private long writtenDeathTime;
+    private long writtenTime;
 
     public DeathNoteImpl() {
         deathnote = new HashMap<>();
@@ -35,7 +33,7 @@ public class DeathNoteImpl implements DeathNote {
     public void writeName(final String name) {
         if (Objects.nonNull(name)) {
             deathnote.put(name, new Death());
-            writtenNameTime = System.currentTimeMillis();
+            writtenTime = System.currentTimeMillis();
             lastDeath = name;
         } else {
             throw new NullPointerException();
@@ -48,9 +46,8 @@ public class DeathNoteImpl implements DeathNote {
             throw new IllegalStateException("Death note empty or null string was passed");
         }
         final long now = System.currentTimeMillis();
-        if (now - this.writtenNameTime <= WRITE_DEATH_LIMIT) {
+        if (now - this.writtenTime <= WRITE_DEATH_LIMIT) {
             deathnote.get(lastDeath).setCause(cause);
-            this.writtenDeathTime = System.currentTimeMillis();
             return true;
         } else {
             return false;
@@ -63,8 +60,7 @@ public class DeathNoteImpl implements DeathNote {
             throw new IllegalStateException("Death note empty or null string was passed");
         }
         final long now = System.currentTimeMillis();
-        final long before = deathnote.get(lastDeath).cause.equals(DEFAULT_CAUSE) ? 
-                            writtenNameTime : writtenDeathTime;
+        final long before = this.writtenTime;
         if (now - before <= WRITE_DETAILS_LIMIT) {
             deathnote.get(lastDeath).setDetails(details);
             return true;
@@ -101,6 +97,7 @@ public class DeathNoteImpl implements DeathNote {
 
     class Death {
 
+        private static final String DEFAULT_CAUSE = "heart attack";
         private String cause;
         private String details;
 
