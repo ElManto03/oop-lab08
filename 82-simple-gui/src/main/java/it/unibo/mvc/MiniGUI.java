@@ -42,9 +42,8 @@ public class MiniGUI {
         canvas.add(newPanel, BorderLayout.CENTER);
         newPanel.add(write);
         final JTextField result = new JTextField("Result");
-        canvas.add(result, BorderLayout.NORTH);
         result.setEditable(false);
-
+        canvas.add(result, BorderLayout.NORTH);
         /*
          * Handlers
          */
